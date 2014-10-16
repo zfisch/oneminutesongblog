@@ -1,15 +1,6 @@
 var express = require('express'),
 	exphbs  = require('express-handlebars');
-	mongoose = require('mongoose');
 var app = express();
-
-// mongoose.connect('mongodb://localhost/test');
-// var db = mongoose.connection;
-// db.on('error', console.error.bind(console, 'connection error:'));
-// db.once('open', function callback () {
-//   // yay!
-// });
-
 
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');

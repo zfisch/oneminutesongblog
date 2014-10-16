@@ -1,13 +1,16 @@
 <h1>One Minute Song Blog</h1>
 <h3>Log in with your SoundCloud account to get started.</h3>
 <script src="//connect.soundcloud.com/sdk.js"></script>
+<script src="https://cdn.firebase.com/js/client/1.1.2/firebase.js"></script>
+{{!-- <script type="text/javascript" src="http://documentcloud.github.com/underscore/underscore-min.js"></script> --}}
 <script>
+  var ref = new Firebase("https://torid-inferno-9399.firebaseio.com/");
   SC.initialize({
     client_id: "dc1c355c11bda78ef0e6ab0266cb2761",
     redirect_uri: "http://127.0.0.1:3000/callback",
   });
 
-SC.connect(function(){
+  SC.connect(function(){
     
     //get User ID
     SC.get('/me', function(me){
@@ -37,19 +40,40 @@ SC.connect(function(){
   				};	
   			}
 
-  			//add all one minute songs to page
-  			for(song in oneMinuteSongs) {
-				var track_url = oneMinuteSongs[song]['permalink_url'];
-				(function(oneMinuteSongs, song){
-					SC.oEmbed(track_url, function(oEmbed) {
-						var div = document.createElement('div');
-						div.innerHTML = oEmbed.html;
-						document.body.appendChild(div);
-					});
-				})(oneMinuteSongs, song);
-  			}
+        //add all one minute songs to database
+  			for(track in oneMinuteSongs) {
+  				var trackTitle = oneMinuteSongs[track]['title']
+          var trackUrl = oneMinuteSongs[track]['permalink_url'];
+          var trackId = oneMinuteSongs[track]['id'];
+          var tracksRef = ref.child(String(trackId));
+          tracksRef.set({
+            title: trackTitle,
+            url: trackUrl
+          });
+        };
 
-  		});
-  });
-});
+        //pull all songs from database to display on page
+        ref.on('value', function (snapshot) {
+          var tracks = snapshot.val();
+          for (id in tracks) {
+            console.log(tracks[id]);
+            
+
+            (function (url) {
+              SC.oEmbed(url, function(oEmbed){
+                var div = document.createElement('div');
+                div.innerHTML = oEmbed.html;
+                document.body.appendChild(div);
+              });
+            })(tracks[id].url);
+          }
+          // , function (errorObject) {
+          //   console.log('The read failed: ' + errorObject.code);
+          //   };
+
+
+  	       });
+        });
+      });
+    });
 </script>
