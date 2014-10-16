@@ -1,7 +1,10 @@
 {
   "name": "soundclouder",
-  "version": "1.0.0",
-  "description": "soundclouder test implementation",
+  "version": "0.0.1",
+  "description": "share one minute soundcloud songs",
+  "engines": {
+    "node": "0.10.x"
+  },
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
